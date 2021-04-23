@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Hall</title>
 </head>
 <body>
-<p>Зал</p>
+<p>Зал кинотеатра</p>
+<p>Ряд кресло статус</p>
+
+<form th:method="POST" th:action="@{/hall}">
+    <div th:each="seat : ${curHall}">
+        <input type="checkbox" name = "chair" th:value = "${seat.getId}">
+        <span th:text="${seat.getRowNum}">row</span>
+        <span th:text="${seat.getChairNum}">chair</span>
+        <span th:text="${seat.getStatus}">status</span>
+    </div>
+    <input type="submit" value="Забронировать">
+</form>
+
 </body>
 </html>

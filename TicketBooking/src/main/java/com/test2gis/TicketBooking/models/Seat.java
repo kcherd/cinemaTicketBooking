@@ -37,7 +37,7 @@ public class Seat {
         this.chairNum = chairNum;
     }
 
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
