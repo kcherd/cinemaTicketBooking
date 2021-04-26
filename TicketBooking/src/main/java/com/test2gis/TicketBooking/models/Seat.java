@@ -6,6 +6,8 @@ public class Seat {
     private int chairNum;
     private boolean status;
 
+    public Seat(){}
+
     public Seat(int id, int rowNum, int chairNum, boolean status) {
         this.id = id;
         this.rowNum = rowNum;

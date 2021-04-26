@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinemas</title>
+</head>
+<body>
+<div th:text="${'Список кинотеатров для фильма №' + idFilm}">Список кинотеатров для фильма</div>
+<div th:each="cinema : ${cinemas}">
+    <a th:href="@{/film{id}/cinema{id2}(id=${idFilm}, id2 = ${cinema.getId})}" th:text="${cinema.getName + ', ' + cinema.getAddress}">cinema</a>
+</div>
+</body>
+</html>
