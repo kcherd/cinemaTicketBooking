@@ -8,12 +8,12 @@
 <p>Зал кинотеатра</p>
 <p>Ряд кресло статус</p>
 
-<form th:method="POST" th:action="@{/hall}">
-    <div th:each="seat : ${curHall}">
+<form th:method="POST" th:action="@{/film{id}/cinema{id2}/hall{id3}(id=${idFilm}, id2 = ${idCinema}, id3 = ${idHall})}">
+    <div th:each="seat : ${seats}">
         <input type="checkbox" name = "chair" th:value = "${seat.getId}">
         <span th:text="${seat.getRowNum}">row</span>
         <span th:text="${seat.getChairNum}">chair</span>
-        <span th:text="${seat.getStatus}">status</span>
+        <span th:text="${seat.getStatus}? свободно : занято">status</span>
     </div>
     <input type="submit" value="Забронировать">
 </form>

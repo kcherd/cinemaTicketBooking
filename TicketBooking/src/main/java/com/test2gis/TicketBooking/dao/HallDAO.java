@@ -26,16 +26,6 @@ public class HallDAO {
         }
     }
 
-    private ArrayList<Seat> seats;
-
-    {
-        seats = new ArrayList<>();
-        seats.add(new Seat(1, 1,1, true));
-        seats.add(new Seat(2, 1,2, true));
-        seats.add(new Seat(3, 2,1, true));
-        seats.add(new Seat(4, 2,2, true));
-    }
-
     public List<Film> films(){
         List<Film> films = new ArrayList<>();
 
@@ -58,6 +48,22 @@ public class HallDAO {
         }
 
         return films;
+    }
+
+    public String film(int id){
+        StringBuilder name = new StringBuilder();
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement("select name from films where id = ?");
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                name.append(resultSet.getString("name"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return name.toString();
     }
 
     public List<Cinema> cinemas(int id){
@@ -88,6 +94,22 @@ public class HallDAO {
         return cinemas;
     }
 
+    public String cinema(int id){
+        StringBuilder name = new StringBuilder();
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement("select name from cinemas where id = ?");
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                name.append(resultSet.getString("name"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return name.toString();
+    }
+
     public List<Integer> halls(int idFilm, int idCinema){
         List<Integer> halls = new ArrayList<>();
 
@@ -110,13 +132,15 @@ public class HallDAO {
     }
 
     //Список мест в зале
-    public List<Seat> seats(){
+    public List<Seat> seats(int idHall){
         List<Seat> seatList = new ArrayList<>();
 
         try {
-            Statement statement = connection.createStatement();
-            String query = "select id_chair, row_num, col_num, status from halls where id_hall = 5";
-            ResultSet resultSet = statement.executeQuery(query);
+
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "select id_chair, row_num, col_num, status from halls where id_hall = ? order by id");
+            preparedStatement.setInt(1, idHall);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()){
                 Seat seat = new Seat();
@@ -136,16 +160,19 @@ public class HallDAO {
     }
 
     //Бронирование мест в зале
-    public boolean reservation(int [] seatsId){
-        for (int id: seatsId) {
-            for (Seat seat : seats) {
-                if (seat.getId() == id) {
-                    if (seat.getStatus()) {
-                        seat.setStatus(false);
-                    }
-                }
+    public boolean reservation(int [] seatsId, int idHall){
+        int result = 0;
+        try {
+            for (int i = 0; i < seatsId.length; i++) {
+                PreparedStatement preparedStatement = connection.prepareStatement("update halls set status=false where id_hall = ? and id_chair=?");
+                preparedStatement.setInt(1, idHall);
+                preparedStatement.setInt(2, seatsId[i]);
+
+                result = preparedStatement.executeUpdate();
             }
+        }catch (SQLException e){
+            e.printStackTrace();
         }
-        return true;
+        return result > 0;
     }
 }
